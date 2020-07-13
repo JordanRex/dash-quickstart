@@ -18,7 +18,7 @@ def get_menuheader(linkclass='home'):
             dbc.Row(
                 [
                     html.A(html.Img(
-                        src=app.get_asset_url('imgs/logo_red_bain.svg'),
+                        src=app.get_asset_url('imgs/'),
                         className="logo",
                         style=bain_logo_style,
                     ), href='/home'),

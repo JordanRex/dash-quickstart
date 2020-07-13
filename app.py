@@ -1,13 +1,14 @@
 import dash
 import dash_auth
 import flask
+import dash_bootstrap_components as dbc
 
 from helpers.secrets import VALID_USERNAME_PASSWORD_PAIRS
 
 ###########################################################################################################################
 ### SERVER ###
 server = flask.Flask(__name__)
-app = dash.Dash(__name__, server=server)
+app = dash.Dash(__name__, server=server, external_stylesheets=[dbc.themes.COSMO])
 
 app.title = 'TITLE'
 app.scripts.config.serve_locally = True
