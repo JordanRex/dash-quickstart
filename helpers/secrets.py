@@ -1,5 +1,6 @@
 ## secrets
 
 VALID_USERNAME_PASSWORD_PAIRS = {
-    'admin': 'bainbain',
+    'admin': 'admin',
+    'demo': 'demo'
 }

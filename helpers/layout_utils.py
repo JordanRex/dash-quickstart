@@ -1,5 +1,6 @@
 ## layout_utils
 
+###########################################################################################################################
 ## functions to generate dynamic layout for dash
 
 from helpers.styles import *
@@ -9,50 +10,86 @@ import dash_bootstrap_components as dbc
 
 from app import app
 
-
 ###########################################################################################################################
+###########################################################################################################################
+PLOTLY_LOGO = "https://images.plot.ly/logo/new-branding/plotly-logomark.png"
+
+navbar = dbc.Navbar(
+    [
+        html.A(
+            # Use row and col to control vertical alignment of logo / brand
+            dbc.Row(
+                [
+                    dbc.Col(html.Img(src=PLOTLY_LOGO, height="30px")),
+                    dbc.Col(dbc.NavbarBrand("Header")),
+                ],
+                align="center",
+                no_gutters=True,
+            ),
+            href="https://plot.ly",
+        ),
+    ],
+    color="dark",
+    dark=True,
+)
+
 # menu function
-def get_menuheader(linkclass='home'):
+def get_menuheader():
     return dbc.Container(
         [
             dbc.Row(
                 [
-                    html.A(html.Img(
-                        src=app.get_asset_url('imgs/'),
-                        className="logo",
-                        style=bain_logo_style,
-                    ), href='/home'),
-                    html.Div(
-                        [html.H4(children="Application", style={'font-size': 40})],
-                        style=app_title_style
+                    dbc.Col(
+                        [
+                            navbar
+                        ], width=12
                     )
-                ],
-                className="row all-tabs"
+                ]
             ),
-            dbc.Row([
-                dcc.Link(
-                    "Home",
-                    href="/home",
-                    className=f"a{' active' if linkclass == 'home' else ''}",
-                    id='home-link'
-                ),
-                dcc.Link(
-                    "Page One",
-                    href="/page1",
-                    className=f"a{' active' if linkclass == 'p1' else ''}",
-                    id='p1-link'
-                ),
-            ])], style=HEADER_STYLE)
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                            dcc.Link(
+                                "Home",
+                                href="/home",
+                                id='home-link'
+                            )
+                        ], width=4
+                    ),
+                    dbc.Col(
+                        [
+                            dcc.Link(
+                                "Page One",
+                                href="/page_1",
+                                id='p1-link'
+                            ),
+                        ], width=4
+                    ),
+                    dbc.Col(
+                        [
+                            dcc.Link(
+                                "Page One",
+                                href="/page_2",
+                                id='p2-link'
+                            )
+                        ], width=4
+                    )
+                ]
+            )
+        ], style=HEADER_STYLE)
+
 
 
 ###########################################################################################################################
+###########################################################################################################################
 # dash card fn to generate dropdown boxes
-def div_dropdown(div_title, div_id, linkclass, disable):
+def div_dropdown(div_title, div_id, disable):
     return dbc.Card([
         dbc.CardHeader(div_title),
         dbc.CardBody([
             dcc.Dropdown(
-                id=f'{div_id}-{linkclass}-dropdown',
+                id=f'{div_id}-dropdown',
                 multi=False,
                 disabled=disable,
                 style=dropdown_style)
@@ -60,11 +97,11 @@ def div_dropdown(div_title, div_id, linkclass, disable):
     ], color='light')
 
 
-def sidebar_filters(attr_prop, linkclass, disable=False):
+def sidebar_filters(attr_prop, disable=False):
     div_filters = []
     for k, v in attr_prop.items():
         if len(k) > 1:
-            div_filters.append(div_dropdown(v['label'], k, linkclass, disable))
+            div_filters.append(div_dropdown(v['label'], k, disable))
             div_filters.append(html.Br())
 
     return html.Div([
@@ -74,28 +111,3 @@ def sidebar_filters(attr_prop, linkclass, disable=False):
             pills=True)],
         style=SIDEBAR_STYLE)
 
-###########################################################################################################################
-# dash card fn to generate scenario buttons (dynamic)
-# def scenario_btn(itr, linkclass, show):
-#     scenario_display_num = itr + 1
-#     if f'btn-{itr}-{linkclass}' in show:
-#         return dbc.Button(f'Scenario {scenario_display_num}', id=f'btn-{itr}-{linkclass}', className='button-primary', style=btn_active_style)
-#     else:
-#         return dbc.Button(f'Scenario {scenario_display_num}', id=f'btn-{itr}-{linkclass}', className='button-primary', style=btn_hidden_style)
-# def scenarios_card(num, linkclass):
-#     div_scenarios = []
-#     show_scenario = [f'btn-0-{linkclass}']
-#     for i in range(num):
-#         div_scenarios.append(scenario_btn(i, linkclass, show_scenario))
-#     if linkclass=="cs":
-#         div_scenarios.append(dbc.Button('+', id="btn+", className='button-primary', style=btn_plus))
-#     scenarios_card_output = html.Div([
-#                 dbc.Row([
-#                     dbc.Col(
-#                         dbc.ButtonGroup(id=f'scenarios_card-{linkclass}', children=div_scenarios, style={'padding': '5px'}), width=12)
-#                 ],
-#                     justify='start'
-#                 )],
-#                 style=scenario_buttons_row_style)
-#     return scenarios_card_output
-###########################################################################################################################
