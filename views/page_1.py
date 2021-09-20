@@ -1,7 +1,5 @@
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import html, dcc, Input, Output
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
 
 from helpers.layout_utils import get_menuheader
 from helpers.styles import *
@@ -19,3 +17,8 @@ def layout_page1():
         fluid=True,
         style=CONTAINER_STYLE
     )
+
+
+###########################################################################################################################
+# CALLBACKS
+###########################################################################################################################

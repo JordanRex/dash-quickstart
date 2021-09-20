@@ -1,4 +1,4 @@
-import dash_html_components as html
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 
 from helpers.layout_utils import get_menuheader
@@ -18,3 +18,8 @@ def layout_home():
         fluid=True,
         style=CONTAINER_STYLE
     )
+
+
+###########################################################################################################################
+# CALLBACKS
+###########################################################################################################################

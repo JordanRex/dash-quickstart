@@ -1,7 +1,6 @@
 import numpy as np, pandas as pd
 
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html, dcc
 import dash_bootstrap_components as dbc
 from dash.dash import no_update
 from multiprocessing import cpu_count
@@ -9,6 +8,58 @@ from multiprocessing import cpu_count
 from helpers.styles import *
 
 from app import app as app
+
+#####################################################################################
+
+## LOTTIE functions
+def error404():
+    url = "/assets/animations/lottie/29142-error-404.json"
+    options = dict(
+        loop=True,
+        autoplay=True,
+        rendererSettings=dict(preserveAspectRatio="xMidYMid slice"),
+    )
+    return html.Div(de.Lottie(options=options, width="25%", height="25%", url=url))
+
+
+def coming_soon():
+    url = "/assets/animations/lottie/34957-coming-soon.json"
+    options = dict(
+        loop=True,
+        autoplay=True,
+        rendererSettings=dict(preserveAspectRatio="xMidYMid slice"),
+    )
+    return html.Div(de.Lottie(options=options, width="25%", height="25%", url=url))
+
+
+def under_construction():
+    url = "/assets/animations/lottie/52975-under-construction.json"
+    options = dict(
+        loop=True,
+        autoplay=True,
+        rendererSettings=dict(preserveAspectRatio="xMidYMid slice"),
+    )
+    return html.Div(de.Lottie(options=options, width="25%", height="25%", url=url))
+
+#####################################################################################
+
+# flatfile reading utility function
+def parse_contents(contents, filename):
+    content_type, content_string = contents.split(",")
+    decoded = base64.b64decode(content_string)
+
+    try:
+        if "csv" in filename:
+            # Assume that the user uploaded a CSV file
+            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
+        elif "xls" in filename:
+            # Assume that the user uploaded an excel file
+            df = pd.read_excel(io.BytesIO(decoded))
+    except Exception as e:
+        print(e)
+        return "There was an error processing this file."
+
+    return df
 
 
 def make_dash_table(df):
@@ -113,6 +164,17 @@ def make_round_commasep(num):
     return f'{currency_prefix} {int(np.round(num, 0)):,} {currency_suffix}'
 
 
+def lst_to_json(lst):
+    return json.dumps(lst).encode("utf8")
+
+
+def json_to_lst(data):
+    return json.loads(data.decode("utf8"))
+
+
+def findinlst(lst, val):
+    return [i for i, x in enumerate(lst) if x == val]
+    
 #####################################################################################
 # bubble chart functions
 
@@ -188,7 +250,9 @@ def kpi_card(header, x, y, kpis):
 
 def num_workers(workers=None):
     if workers is None:
-        return (cpu_count() * 2) - 1
+        return (cpu_count() * 2) + 1
+    elif workers == 0:
+        return 4
     else:
         return workers
 
