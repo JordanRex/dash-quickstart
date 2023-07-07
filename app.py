@@ -7,8 +7,6 @@ import os
 
 from helpers.secrets import VALID_USERNAME_PASSWORD_PAIRS
 
-# os.system("cls" if os.name == "nt" else "clear")
-
 from config import * 
 
 ###########################################################################################################################
