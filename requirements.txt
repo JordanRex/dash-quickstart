@@ -1,5 +1,5 @@
 Brotli==1.0.9
-cffi==1.14.6
+cffi==1.15.1
 click==8.0.1
 colorama==0.4.4
 dash==2.0.0
