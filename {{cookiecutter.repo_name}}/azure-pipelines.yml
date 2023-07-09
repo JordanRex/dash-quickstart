@@ -1,0 +1,64 @@
+trigger:
+- main
+
+resources:
+- repo: self 
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'SupplyFlow_deploytest'
+  containerRegistry: 'bpoacr.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  # Use Build.BuildId as the default tag for the image
+  tag: '$(Build.BuildId)'
+
+  # Agent VM image name
+  vmImageName: 'ubuntu-latest'
+
+  # Set appname and imagerepository based on the branch
+  imagerepository: 'supplygenai'
+  environment: 'prod'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build and Push
+    pool:
+      vmImage: $(vmImageName)
+    steps:
+    - task: Docker@2
+      displayName: Build Docker image
+      inputs:
+        command: build
+        repository: '$(imagerepository)'
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: $(tag)
+        #context: $(Build.SourcesDirectory)
+        arguments: |
+          --build-arg ENVIRONMENT=$(environment)
+
+    - task: Docker@2
+      displayName: Push Docker image
+      inputs:
+        command: push
+        repository: '$(imagerepository)'
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
+
+    - script: |
+        echo "ENVIRONMENT=$(environment)" > $(Build.SourcesDirectory)/.env
+        echo "azure_user=$(VARUN_MAIL_USERNAME)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_pwd=$(VARUN_MAIL_PASSWORD)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_rg=$(AZURE_RG)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_key=$(AZURE_KEY)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_endpoint=$(AZURE_ENDPOINT)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_region=$(AZURE_REGION)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_deployment_model=$(AZURE_DEPLOYMENT_MODEL)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_deployment_type=$(AZURE_DEPLOYMENT_TYPE)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_embedding_model=$(AZURE_EMBEDDING_MODEL)" >> $(Build.SourcesDirectory)/.env
+        echo "azure_apiversion=$(AZURE_APIVERSION)" >> $(Build.SourcesDirectory)/.env
+      displayName: Create .env file

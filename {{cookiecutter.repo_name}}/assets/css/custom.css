@@ -1,0 +1,202 @@
+/*.divcenter {
+    height: 250px;
+    width: 1000px;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}*/
+
+.divcenter {
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root {
+    scroll-behavior: smooth;
+  }
+}
+
+/* This creates a skinny side bar fixed to the left of the page */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5rem;
+  padding: 2rem 1rem;
+/*  background-color: #f8f9fa;*/
+  z-index: 1050;
+  transition: width 0.2s ease-in-out;
+}
+
+/* when the user hovers on the sidebar, expand it */
+.sidebar:hover {
+  width: 16rem;
+}
+
+/* make sure the contents of the navlink don't wrap when navbar collapses */
+.sidebar .nav-link {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* fix the width of the icons */
+.sidebar .nav-link i {
+  width: 1rem;
+}
+
+/* hide the navlink labels by default */
+.sidebar .nav-link span {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+}
+
+/* when the sidebar is hovered, reveal the labels */
+.sidebar:hover .nav-link span {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* container for the sidebar header. make sure the contents don't wrap when
+ * the sidebar is collapsed.
+ */
+.sidebar-header {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* position the header relative to the logo and hide by default */
+.sidebar-header h5 {
+  opacity: 0;
+  margin-left: 1rem;
+  margin-bottom: 0;
+  transition: opacity 0.1s ease-in-out;
+}
+
+/* reveal the header when the sidebar is toggled */
+.sidebar:hover .sidebar-header h5 {
+  opacity: 1;
+}
+
+/* position the content relative to the collapsed sidebar */
+.content {
+  margin-left: 7rem;
+  margin-right: 2rem;
+  padding: 2rem 1rem;
+}
+
+/* https://community.plotly.com/t/adding-a-select-all-button-to-a-multi-select-dropdown/8849/14 */
+/* Bouton vert (ex: pour dire que les données sont chargées */
+.buttonGreen {
+    color: #68a360;
+    border-color: #343d33;
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+/* Bouton clignotant rouge */
+.buttonBlink {
+    color: #fff;
+    border-color: #33363d;
+    display: inline-block;
+    margin-top: 4px;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+  @keyframes glowing {
+    0% {
+      background-color: #d47c7c;
+    }
+    50% {
+      background-color: #da4e4e;
+      box-shadow: 0 0 10px #da4e4e;
+    }
+    100% {
+      background-color: #d47c7c;
+    }
+  }
+  .buttonBlink {
+    animation: glowing 1000ms infinite;
+  }
+
+.Select-menu, .Select-menu-outer {
+    max-height: 200px;
+}
+
+:root {
+    --nprogress-color-good: green;
+    --nprogress-color-bad: red
+}
+
+.form-control::-moz-placeholder {
+  color: #777;
+  opacity: 0.5;
+}
+.form-control::placeholder {
+  color: #777;
+  opacity: 0.5;
+}
+
+body::-webkit-scrollbar{
+    display: none;
+  }
+.modal-body::-webkit-scrollbar{
+    display: none;
+  }
+body {
+    -ms-overflow-style: none;
+  }
+.modal-body {
+    -ms-overflow-style: none;
+  }
