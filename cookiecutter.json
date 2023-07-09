@@ -1,13 +1,13 @@
 {
-    "full_name": ["", "John Doe"],
-    "github_username": ["", "johndoe"],
+    "full_name": ["John Doe", ""],
+    "github_username": ["johndoe", ""],
     "app_name": "MyProject",
-    "repo_name": "{{cookiecutter.app_name.lower().replace(' ', '_').replace('-', '_')}}",
+    "repo_name": "{{ cookiecutter.app_name.lower().replace(' ', '_').replace('-', '_') }}",
     "app_title": "App",
     "app_update_title": "Working ... ",
     "app_footer": "© APP",
     "app_support": "app.support@org.com",
-    "azure_ad": [True, False],
+    "azure_ad": ["n", "y"],
     "sqldb": "serverside_db",
     "bootstrap_theme": [
         "CERULEAN",
@@ -34,7 +34,6 @@
         "UNITED",
         "VAPOR",
         "YETI",
-        "ZEPHYR",
-
+        "ZEPHYR"
     ]
 }

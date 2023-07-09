@@ -16,11 +16,11 @@ import base64
 from builtins import paths
 
 abi_logo = base64.b64encode(
-    open(paths["assets_path"] + "/images/logo_abi/FullColor-White.png", "rb").read()
+    open(str(paths["assets_path"]) + "/images/logo_abi/FullColor-White.png", "rb").read()
 ).decode("ascii")
 ts_logo = base64.b64encode(
     open(
-        paths["assets_path"] + "/images/logo_abi/TechSupplyTransformationLogo.png", "rb"
+        str(paths["assets_path"]) + "/images/logo_abi/TechSupplyTransformationLogo.png", "rb"
     ).read()
 ).decode("ascii")
 

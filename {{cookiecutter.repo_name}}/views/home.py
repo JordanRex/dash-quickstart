@@ -18,7 +18,7 @@ import base64
 from builtins import paths
 
 logo = base64.b64encode(
-    open(paths["assets_path"] + "/images/home/logo.png", "rb").read()
+    open(str(paths["assets_path"]) + "/images/home/logo.png", "rb").read()
 ).decode("ascii")
 
 ###########################################################################################################################

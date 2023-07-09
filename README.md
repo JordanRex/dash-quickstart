@@ -8,4 +8,9 @@ A basic repo to quickstart work on webapps built on Dash(Plotly)
 	- Debian = source projenv/Scripts/activate
 3. pip install cookiecutter
 4. git clone this repo
-5. go through the steps with the inputs asked for, and get started!
+5. go through the steps with the inputs asked for
+6. pip install -r requirements.txt
+7. tree /F > fstructure.txt
+8. ...
+
+and get started!

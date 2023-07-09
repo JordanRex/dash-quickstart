@@ -1,13 +1,12 @@
-import argparse
-from pathlib import Path
 import pandas as pd
 import platform
 import sys
-import warnings
-from dotenv import load_dotenv
-import builtins
 
-from app import app, server, cache
+from app import (
+    app,
+    server,
+    cache,
+)
 from flask import redirect, request
 
 import dash_bootstrap_components as dbc
@@ -15,61 +14,56 @@ from dash import html, dcc, Input, Output, State, ctx, no_update
 import dash_mantine_components as dmc
 from dash_iconify import DashIconify
 
-# Set warning filters and pandas options
+import os
+import builtins
+
+import warnings
+
 warnings.filterwarnings("ignore")
+
 pd.set_option("display.max_columns", 100)
 
-# Constants
-DEFAULT_MODE = "dev"
-DEFAULT_PROD_SERVER = "waitress"
-DEFAULT_DEV_MODE = "dash"
-DEFAULT_WORKERS_NUM = 6
+###########################################################################################################################
+# APP
+###########################################################################################################################
 
-def main():
-    """
-    The main function to run the app.
-    Runs off index.py based on the arguments passed at server time
-    """
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--mode', default=DEFAULT_MODE,
-                        help='Can take values of prod, dev and maintenance')
-    parser.add_argument('--prod-server', default=DEFAULT_PROD_SERVER)
-    parser.add_argument('--dev-mode', default=DEFAULT_DEV_MODE)
-    parser.add_argument('--workers', type=int, default=DEFAULT_WORKERS_NUM)
-    args = parser.parse_args()
-
+if __name__ == "__main__":
     with server.app_context():
         cache.clear()
 
     from helpers.utils import num_workers, error404, under_construction
-    n_workers = num_workers(args.workers)
+
+    mode = (
+        sys.argv[1] if len(sys.argv) > 1 else "dev"
+    )  # can take values of prod, dev and maintenance
+    prod_server = sys.argv[2] if len(sys.argv) > 2 else "waitress"
+    dev_mode = sys.argv[3] if len(sys.argv) > 3 else "dash"
+    n = sys.argv[4] if len(sys.argv) > 4 else 6
+    n_workers = num_workers(n)
+
+    from dotenv import load_dotenv
 
     load_dotenv()
 
-    builtins.sqldb = "{{cookiecutter.sqldb}}"
+    builtins.sqldb = {{cookiecutter.sqldb}}
 
-    """
-    Define the paths variable
-    """
-    # Paths
+    ###########################################################################################################################
+    #### PATHS ####
+    ###########################################################################################################################
+
+    # the various absolute paths
     paths = dict()
-    base_path = Path.cwd()
-    paths["base_path"] = base_path
-    paths["assets_path"] = base_path / "assets"
+    paths["base_path"] = os.getcwd()
+    paths["assets_path"] = paths["base_path"] + r"/assets"
 
-    # Normalize paths
     for k in paths.keys():
-        paths[k] = paths[k].resolve()
+        paths[k] = os.path.normpath(paths[k])
     builtins.paths = paths
 
     ###########################################################################################################################
     #### IMPORTS ####
     ###########################################################################################################################
 
-    """
-    Import the various pages and utils
-    """
     # the helper functions from various modules
     from helpers.layout_utils import get_sidebar
     from helpers.monitoring_utils import user_logs
@@ -86,33 +80,21 @@ def main():
     # LAYOUT
     ###########################################################################################################################
 
-    # Creating the base layout for the application
     base_layout = dmc.NotificationsProvider(
         html.Div(
             [
-                # Container for notifications
                 html.Div(id="notify-container"),
-                # Main content of the application
                 dbc.Container(
                     dbc.Row(
                         [
-                            # Sidebar
                             dbc.Col(get_sidebar(user=None), width=2),
-                            # Main content area
                             dbc.Col(
                                 [
-                                    # User store
-                                    dcc.Store(id="user_store",
-                                              storage_type="session"),
-                                    # URL location
+                                    # user stores
+                                    dcc.Store(id="user_store", storage_type="session"),
                                     dcc.Location(id="url", refresh=False),
-                                    # Page content
-                                    html.Div(id="page-content",
-                                             className="content"),
-                                    # Admin navigation
-                                    html.Div(id="admin_nav",
-                                             className="content"),
-                                    # Breakline
+                                    html.Div(id="page-content", className="content"),
+                                    html.Div(id="admin_nav", className="content"),
                                     html.Br(),
                                 ],
                                 width=12,
@@ -139,7 +121,6 @@ def main():
         )
     )
 
-    # Validation layout includes all the possible layouts that could be returned by callbacks
     validation_layout = html.Div(
         [
             base_layout,
@@ -154,36 +135,24 @@ def main():
         ]
     )
 
-    # Set the validation layout of the app
     app.validation_layout = validation_layout
-
-    # Set the layout of the app
     app.layout = base_layout
-
 
     ###########################################################################################################################
     # CALLBACKS
     ###########################################################################################################################
+
     # Define a dictionary mapping URL paths to layout functions
     LAYOUTS = {
-        "/": home.layout_home,
-        "/home": home.layout_home,
-        "/page_1": p1.layout_p1,
-        "/page_2": p2.layout_p2,
-        "/admin": admin.layout_admin,
+        "/": home.layout_home(),
+        "/home": home.layout_home(),
+        "/page_1": p1.layout_p1(),
+        "/page_2": p2.layout_p2(),
+        "/admin": admin.layout_admin(),
     }
 
     # Define a list of URLs that require authentication
     AUTH_REQUIRED_URLS = ["/home", "/page_1", "/page_2", "/admin"]
-
-    def get_style():
-        return {
-            "display": "flex",
-            "alignItems": "center",
-            "justifyContent": "center",
-            "padding": "10px",
-            "backgroundColor": "white",
-        }
 
     # Define the callback function
     @app.callback(
@@ -196,34 +165,48 @@ def main():
         [State("user_store", "data")],
     )
     def render_page_content(pathname, userstore):
-        style = get_style()
-        user_store = dict()
-
+        style = {
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "padding": "10px",
+            "backgroundColor": "white",
+        }
+        # Check if the website is in maintenance mode
         if mode == "maintenance":
             return under_construction(), None, no_update
-
-        if mode == "dev":
+        elif mode == "dev":
+            user_store = dict()
             user_store["username"] = "Admin"
+
             if pathname == "/":
                 style = no_update
-            return LAYOUTS[pathname](), user_store, style
 
-        if pathname == "/":
-            user_store["username"] = "No Azure AD" if not cookiecutter.azure_ad else request.headers.get(
-                "X-MS-CLIENT-PRINCIPAL-NAME")
-            return home.layout_home(), user_store, no_update
-
-        if pathname in AUTH_REQUIRED_URLS:
-            if (userstore is None) or (userstore["username"] is None):
-                user_store["username"] = request.headers.get(
-                    "X-MS-CLIENT-PRINCIPAL-NAME")
+            return LAYOUTS[pathname], user_store, style
+        else:
+            if pathname == "/":
+                user_store = dict()
+                if {{cookiecutter.azure_ad}} is True:
+                    user_store["username"] = request.headers.get(
+                        "X-MS-CLIENT-PRINCIPAL-NAME"
+                    )
+                else:
+                    user_store["username"] = "No Azure AD"
                 return home.layout_home(), user_store, no_update
-            else:
-                user_logs(userstore["username"], pathname)
-                return LAYOUTS[pathname](), no_update, style
 
-        # If the user tries to reach a different page, return a 404 error
-        return error404(), no_update, no_update
+            if pathname in AUTH_REQUIRED_URLS:
+                if (userstore is None) | (userstore["username"] == None):
+                    user_store = dict()
+                    user_store["username"] = request.headers.get(
+                        "X-MS-CLIENT-PRINCIPAL-NAME"
+                    )
+                    return home.layout_home(), user_store, no_update
+                else:
+                    user_logs(userstore["username"], pathname)
+                    return LAYOUTS[pathname], no_update, style
+            else:
+                # If the user tries to reach a different page, return home
+                return error404(), no_update, no_update
 
     @app.callback(
         Output("admin_nav", "children"),
@@ -307,7 +290,3 @@ def main():
             dashapp_fn(app)
         else:
             dashapp_fn(app.server, True)
-
-
-if __name__ == "__main__":
-    main()
