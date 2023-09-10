@@ -72,11 +72,6 @@ def render_img_src(path):
 
 #####################################################################################
 
-
-def session_id():
-    return base64.b64encode(os.urandom(16))
-
-
 def lst_to_json(lst):
     return json.dumps(lst).encode("utf8")
 
@@ -96,19 +91,6 @@ def return_as_lst(lst):
         return lst
     else:
         return list(lst)
-
-
-def second_largest(numbers):
-    count = 0
-    m1 = m2 = float("-inf")
-    for x in numbers:
-        count += 1
-        if x > m2:
-            if x >= m1:
-                m1, m2 = x, m1
-            else:
-                m2 = x
-    return m2 if count >= 2 else None
 
 
 def make_annotation_item(x, y, color, text, xloc):
@@ -141,18 +123,6 @@ def noupdate(value, type="options", label=None):
                 return no_update
             else:
                 return value[0]["value"]
-
-
-# np select wrapper
-def select_multiple(df, newcol, choices, default, cols=[], vals=[]):
-    conditions = [
-        (df[cols[0]] > vals[0]) & (df[cols[1]] > vals[1]),
-        (df[cols[0]] < vals[0]) & (df[cols[1]] > vals[1]),
-        (df[cols[0]] < vals[0]) & (df[cols[1]] < vals[1]),
-        (df[cols[0]] > vals[0]) & (df[cols[1]] < vals[1]),
-    ]
-    df[newcol] = np.select(conditions, choices, default=default)
-    return df
 
 
 def make_pct(df, cols):
@@ -205,15 +175,6 @@ def pkl_del(path, name, find=False):
     except:
         pass
     return None
-
-
-def miss_imputation(data):
-    data.replace(r"^\s*$", "None", regex=True, inplace=True)
-    data.replace(r"", "None", inplace=True)
-    data.replace([None], "None", inplace=True)
-    data.fillna("None", inplace=True)
-    return data
-
 
 #####################################################################################
 

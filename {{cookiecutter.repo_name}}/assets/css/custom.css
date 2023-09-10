@@ -1,17 +1,3 @@
-/*.divcenter {
-    height: 250px;
-    width: 1000px;
-    position: absolute;
-    top:0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-}*/
-
 .divcenter {
     text-align: center;
     position: absolute;
@@ -187,16 +173,3 @@
   color: #777;
   opacity: 0.5;
 }
-
-body::-webkit-scrollbar{
-    display: none;
-  }
-.modal-body::-webkit-scrollbar{
-    display: none;
-  }
-body {
-    -ms-overflow-style: none;
-  }
-.modal-body {
-    -ms-overflow-style: none;
-  }
